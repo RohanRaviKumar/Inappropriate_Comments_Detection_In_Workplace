@@ -1,6 +1,6 @@
 # Detecting inappropriate comments in workplace
 
-This project performs sentiment analysis on IMDB movie reviews using several machine learning models, ensemble methods, and hyperparameter tuning techniques.
+This project performs sentiment analysis on inappropriate comments the people may experience at their workplace, using several machine learning models, ensemble methods, and hyperparameter tuning techniques.
 
 ### 👨‍💻 Authors:
 - R Rohan
