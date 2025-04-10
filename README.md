@@ -1,5 +1,3 @@
-[![Open In Colab](https://colab.research.google.com/drive/1WvCUDwZiyqzPLxpIxK7lYyBUBfFLlhvZ?authuser=1#scrollTo=P-2cT2hpbD8K)
-
 # Detecting inappropriate comments in workplace
 
 This project performs sentiment analysis on IMDB movie reviews using several machine learning models, ensemble methods, and hyperparameter tuning techniques.
