@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inappropriate Comment Detection</title>
+
+    <style>
+        /* General Styles */
+:root {
+    --primary-color: #6c63ff;
+    --secondary-color: #4d44db;
+    --dark-color: #2a2a72;
+    --light-color: #f8f9fa;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --text-color: #333;
+    --text-light: #6c757d;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: #f5f7ff;
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  /* Header Styles */
+  .header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+  }
+  
+  .header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+  
+  /* Container Styles */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  
+  .container h2 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* Input Section */
+  .input-section {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+  }
+  
+  .input-section:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-section img {
+    width: 24px;
+    height: 24px;
+    margin-right: 1rem;
+    opacity: 0.7;
+  }
+  
+  #commentInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    background: transparent;
+  }
+  
+  #commentInput::placeholder {
+    color: var(--text-light);
+  }
+  
+  /* Button Styles */
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    display: block;
+    width: 100%;
+  }
+  
+  button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(108, 99, 255, 0.3);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  /* Result Text Styles */
+  #resultText {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    transition: var(--transition);
+  }
+  
+  #resultText.prediction {
+    background-color: rgba(108, 99, 255, 0.1);
+    color: var(--primary-color);
+  }
+  
+  #resultText.sexist {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+    border-left: 4px solid var(--danger-color);
+  }
+  
+  #resultText.non-sexist {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--success-color);
+    border-left: 4px solid var(--success-color);
+  }
+  
+  #resultText.error {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: var(--warning-color);
+    border-left: 4px solid var(--warning-color);
+  }
+  
+  /* History Section */
+  .history {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  
+  .history h3 {
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+  
+  #historyList {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  
+  .history-item {
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    transition: var(--transition);
+  }
+  
+  .history-item:hover {
+    background-color: #e9ecef;
+  }
+  
+  .history-item strong {
+    font-weight: 600;
+  }
+  
+  .history-item strong[data-result="Sexist Comment"] {
+    color: var(--danger-color);
+  }
+  
+  .history-item strong[data-result="Non-Sexist"] {
+    color: var(--success-color);
+  }
+  
+  /* Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .header h1 {
+      font-size: 2rem;
+    }
+    
+    .container {
+      padding: 0 1rem;
+    }
+    
+    .input-section {
+      padding: 0.6rem 1rem;
+    }
+  }
+    </style>
+    <script>
+    async function analyzeComment() {
+        const input = document.getElementById("commentInput").value.trim();
+        const resultText = document.getElementById("resultText");
+        
+        if (!input) {
+            resultText.innerText = "Please enter a comment to analyze";
+            resultText.className = "error";
+            return;
+        }
+
+        resultText.innerText = "Analyzing...";
+        resultText.className = "prediction";
+
+        // try {
+        //     const response = await fetch("http://localhost:5000/predict", {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         },
+        //         body: JSON.stringify({ text: input })
+        //     });
+            
+        //     const data = await response.json();
+        //     let result = data.prediction === "1" ? "Non-Sexist" : "Sexist";
+        //     console.log(result);
+
+        //     resultText.innerText = result;
+        //     resultText.className = result === "Sexist" ? "sexist" : "non-sexist";
+            
+        //     // const historyItem = document.createElement("div");
+        //     // historyItem.className = "history-item";
+        //     // historyItem.innerHTML = <strong>${result}</strong>: ${input.replace(/</g, '&lt;').replace(/>/g, '&gt;')};
+
+        //     const historyItem = document.createElement("div");
+        //     historyItem.className = "history-item";
+        //     historyItem.innerHTML = `<strong>${result}</strong>: ${input.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`;
+        //     document.getElementById("historyList").appendChild(historyItem);
+
+            
+        //     document.getElementById("historyList").appendChild(historyItem);
+        //     console.log(resultText)
+        // } catch (error) {
+        //     console.error("Error:", error);
+        //     resultText.innerText = "Error connecting to the server.";
+        //     resultText.className = "error";
+        // }
+
+        try {
+          const response = await fetch("http://localhost:5000/predict", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ text: input })
+          });
+          
+          const data = await response.json();
+
+          console.log(data.prediction)
+          
+          // Corrected label mapping:
+          let result = data.prediction === 1 ? "Inappropriate" : "Appropriate";
+          
+          resultText.innerText = result;
+          resultText.className = data.prediction === 1 ? "sexist" : "non-sexist";
+          
+          const historyItem = document.createElement("div");
+          historyItem.className = "history-item";
+          historyItem.innerHTML = `<strong>${result}</strong>: ${input.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`;
+          document.getElementById("historyList").appendChild(historyItem);
+
+      } catch (error) {
+            console.error("Error:", error);
+            resultText.innerText = "Error connecting to the server.";
+            resultText.className = "error";
+      }
+    }
+</script>
+</head>
+<body>
+    <div class="header">
+        <h1>Inappropriate Comment Detection in Workplace</h1>
+        <p>Analyze comments and detect if they contain Inappropriate content.</p>
+    </div>
+    <div class="container">
+        <h2>💬 Enter a Comment</h2>
+        <div class="input-section">
+            <img src="https://cdn-icons-png.flaticon.com/512/4280/4280216.png" alt="AI">
+            <input type="text" id="commentInput" placeholder="Type a comment...">
+        </div>
+        <button onclick="analyzeComment()">Analyze</button>
+        <p id="resultText" class="prediction"></p>
+        <div class="history">
+            <h3>Previous Predictions</h3>
+            <div id="historyList"></div>
+        </div>
+    </div>
+</body>
+</html>
